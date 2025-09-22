@@ -531,6 +531,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                     case eCharacterState.CONTAINED:
                         {
                             Debug.Log(user.id + " is prison");
+                            GameManager.instance.characters[users[i].id].SetPosition(new Vector3(22.0f,-4.0f,0));
                             GameManager.instance.userCharacter.OnChangeState<CharacterPrisonState>();
                         }
                         break;
@@ -576,6 +577,11 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
             GameManager.instance.SetGameState(response.PhaseType, response.NextPhaseAt);
         for(int i = 0; i < response.CharacterPositions.Count; i++)
         {
+            if ((eCharacterState)GameManager.instance.characters[DataManager.instance.users[i].id].userInfo.characterData.StateInfo.State == eCharacterState.CONTAINED)
+            {
+                GameManager.instance.characters[DataManager.instance.users[i].id].SetPosition(new Vector3(22.0f, -4.0f, 0));
+                continue;
+            }
             GameManager.instance.characters[DataManager.instance.users[i].id].SetPosition(response.CharacterPositions[i].ToVector3());
         }
     }

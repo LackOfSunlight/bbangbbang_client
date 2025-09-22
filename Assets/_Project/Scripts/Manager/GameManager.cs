@@ -38,7 +38,7 @@ public class GameManager : MonoSingleton<GameManager>
     private Queue<CardDataSO> worldDeck = new Queue<CardDataSO>();
 
     private int day = 0;
-    private bool isAfternoon = true;
+    public bool isAfternoon = true;
     public bool isPlaying;
 
     public List<CardDataSO> pleaMarketCards = new List<CardDataSO>();
@@ -111,6 +111,9 @@ public class GameManager : MonoSingleton<GameManager>
         UIManager.Hide<PopupCardSelection>();
         UIManager.Hide<PopupAlert>();
         UIManager.Hide<PopupPleaMarket>();
+        UIGame.instance.OnSelectDirectTarget(false);
+        GameManager.instance.SelectedCard = null;
+
 
         if (PhaseType == PhaseType.Day)
         {
@@ -121,7 +124,15 @@ public class GameManager : MonoSingleton<GameManager>
         foreach (var key in characters.Keys)
         {
             if (PhaseType == PhaseType.Day)
+            {
+                if ((eCharacterState)characters[key].userInfo.characterData.StateInfo.State == eCharacterState.CONTAINED)
+                {
+                    characters[key].OnChangeState<CharacterPrisonState>();
+                    continue;
+                }
+
                 characters[key].OnChangeState<CharacterIdleState>();
+            }
             else
                 characters[key].OnChangeState<CharacterStopState>();
         }
@@ -139,7 +150,7 @@ public class GameManager : MonoSingleton<GameManager>
             UIManager.Hide<PopupRemoveCardSelection>();
         }
         
-        isPlaying = true;
+        isPlaying = true; 
         UIGame.instance.SetDeckCount();
     }
 

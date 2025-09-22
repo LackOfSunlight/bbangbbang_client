@@ -59,6 +59,8 @@ public class UIGame : UIBase
 
     public void OnClickCharacterSlot(int idx)
     {
+        if (!GameManager.instance.isAfternoon) return;
+
         if (GameManager.instance.SelectedCard == null && !GameManager.instance.isSelectBombTarget) return;
         var card = GameManager.instance.SelectedCard;
         var target = DataManager.instance.users[idx];

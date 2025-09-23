@@ -28653,6 +28653,7 @@ MonoBehaviour:
   - {fileID: 1510605218}
   - {fileID: 934670054}
   targetGroup: {fileID: 1259109808}
+  isAfternoon: 1
   isPlaying: 0
   pleaMarketCards: []
   isSelectBombTarget: 0

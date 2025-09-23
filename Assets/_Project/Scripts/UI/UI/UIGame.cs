@@ -28,7 +28,6 @@ public class UIGame : UIBase
     [SerializeField] public VirtualStick stick;
     [SerializeField] private Image bombButton;
 
-    [SerializeField] private Button jobDescriptionBtn;
     private float timer = 180;
     Dictionary<long, UserInfoSlot> userslots = new Dictionary<long, UserInfoSlot>();
     private bool isBombTargetSelect = false;
@@ -294,4 +293,10 @@ public class UIGame : UIBase
     {
        UIManager.Show<PopupJobInfo>();
     }
+
+    public void OnClickCharacteristicBtn()
+    {
+        UIManager.Show<PopupCharacteristic>();
+    }
+
 }

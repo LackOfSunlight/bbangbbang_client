@@ -1772,6 +1772,8 @@ MonoBehaviour:
   uiOptions:
     isActiveOnLoad: 1
     isDestroyOnHide: 0
+  openDuration: 0.3
+  closeDuration: 0.2
 --- !u!1 &8526133367490547422
 GameObject:
   m_ObjectHideFlags: 0

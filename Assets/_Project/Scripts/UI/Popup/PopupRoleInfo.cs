@@ -89,8 +89,11 @@ public class PopupRoleInfo : UIBase
         roleDescription.text = roleDescriptionTexts[(int)roleType];
 
 
-        canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, fadeDuration);
+        // 시작 크기 0으로 초기화
+        transform.localScale = Vector3.zero;
+
+        // 0 → 1로 커지면서 "튀어나오는" 느낌 (OutBack으로 튕기는 효과)
+        transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
     }
 

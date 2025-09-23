@@ -326,7 +326,7 @@ MonoBehaviour:
   characterDescription: {fileID: 6827892634538533104}
   characterName: {fileID: 3063681668168839241}
   canvasGroup: {fileID: 8744178336419135658}
-  fadeDuration: 0.5
+  fadeDuration: 1
 --- !u!1 &5302726832790040787
 GameObject:
   m_ObjectHideFlags: 0

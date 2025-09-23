@@ -144,11 +144,14 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public async void GameStartNotification(GamePacket gamePacket)
     {
         var response = gamePacket.GameStartNotification;
+      
+
         await SceneManager.LoadSceneAsync("Game");
         while (!UIManager.IsOpened<UIGame>())
         {
             await Task.Yield();
-        }
+        }     
+
         DataManager.instance.users.Clear();
         for (int i = 0; i < response.Users.Count; i++)
         {

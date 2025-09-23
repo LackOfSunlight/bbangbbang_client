@@ -8,6 +8,7 @@ public class PopupJobInfo : UIBase
     [SerializeField] private float openDuration = 0.3f;
     [SerializeField] private float closeDuration = 0.2f;
 
+
     public override async void Opened(object[] param)
     { 
         this.gameObject.SetActive(true);

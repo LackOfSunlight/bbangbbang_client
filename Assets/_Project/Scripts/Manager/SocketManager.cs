@@ -1,17 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Ironcow;
-using UnityEngine.UI;
-using Ironcow.WebSocketPacket;
-using Google.Protobuf;
-using static GamePacket;
-using Unity.VisualScripting;
 using System;
 using System.Linq;
-using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SocketManager : TCPSocketManagerBase<SocketManager>
 {
@@ -78,11 +70,11 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public void JoinRandomRoomResponse(GamePacket gamePacket)
     {
         var response = gamePacket.JoinRandomRoomResponse;
-        if(response.FailCode != 0)
+        if (response.FailCode != 0)
         {
             Debug.Log("failcode : " + response.FailCode.ToString());
         }
-        else if(response.Success)
+        else if (response.Success)
         {
             UIManager.Show<UIRoom>(response.Room);
         }
@@ -118,7 +110,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public void GamePrepareResponse(GamePacket gamePacket)
     {
         var response = gamePacket.GamePrepareResponse;
-        if(response.FailCode != 0)
+        if (response.FailCode != 0)
         {
             UIManager.ShowAlert(response.FailCode.ToString(), "오류");
             Debug.Log("GamePrepareResponse Failcode : " + response.FailCode.ToString());
@@ -174,6 +166,17 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                 DataManager.instance.users.Add(userinfo);
             }
         }
+
+        await UIManager.Show<PopupRoleInfo>();
+
+        await Task.Delay(3000);
+
+        if (UIManager.IsOpened<PopupRoleInfo>())
+        {
+            var popup = UIManager.Get<PopupRoleInfo>();
+            await popup.CloseWithFade();
+        }
+
         for (int i = 0; i < response.Users.Count; i++)
         {
             await GameManager.instance.OnCreateCharacter(DataManager.instance.users[i], i);
@@ -202,8 +205,9 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
 
         if (response.Success)
         {
-            if (instance.isConnected) {
-                UserInfo.myInfo.OnUsedCard(GameManager.instance.SelectedCard); 
+            if (instance.isConnected)
+            {
+                UserInfo.myInfo.OnUsedCard(GameManager.instance.SelectedCard);
             }
 
             if (UIManager.IsOpened<PopupDeck>())
@@ -212,8 +216,8 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                 UIManager.Hide<PopupBattle>();
 
             UIGame.instance.SetSelectCard(null);
-      
-            if(GameManager.instance.targetCharacter)
+
+            if (GameManager.instance.targetCharacter)
                 GameManager.instance.targetCharacter.OnSelect();
 
             GameManager.instance.targetCharacter = null;
@@ -235,7 +239,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         string targetText = " ";
 
         //null 체크
-        if(target == null)
+        if (target == null)
         {
             response.TargetUserId = 0;
 
@@ -259,10 +263,10 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         {
             targetText = target.nickname;
         }
-            var text = string.Format(response.TargetUserId != 0 ? "{0}유저가 {1}카드를 사용했습니다." : "{0}유저가 {1}카드를 {2}에게 사용했습니다.",
-                use.nickname, response.CardType.GetCardData().displayName, targetText);
+        var text = string.Format(response.TargetUserId != 0 ? "{0}유저가 {1}카드를 사용했습니다." : "{0}유저가 {1}카드를 {2}에게 사용했습니다.",
+            use.nickname, response.CardType.GetCardData().displayName, targetText);
         UIGame.instance.SetNotice(text);
-        if(response.UserId == UserInfo.myInfo.id && card.cardType == CardType.Bbang)
+        if (response.UserId == UserInfo.myInfo.id && card.cardType == CardType.Bbang)
         {
             //UserInfo.myInfo.shotCount++;
             UIGame.instance.SetSelectCard(null);
@@ -275,7 +279,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         var response = gamePacket.UseCardNotification;
         var userinfo = DataManager.instance.users.Find(obj => obj.id == response.UserId);
 
-        if(userinfo.id != UserInfo.myInfo.id)
+        if (userinfo.id != UserInfo.myInfo.id)
             userinfo.OnUseCard(response.CardType.GetCardRcode());
     }
 
@@ -292,14 +296,14 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public void FleaMarketPickResponse(GamePacket gamePacket)
     {
         var response = gamePacket.FleaMarketPickResponse;
-        
+
     }
 
     public async void FleaMarketNotification(GamePacket gamePacket)
     {
         var response = gamePacket.FleaMarketNotification;
         var ui = UIManager.Get<PopupPleaMarket>();
-        if(ui == null)
+        if (ui == null)
         {
             ui = await UIManager.Show<PopupPleaMarket>();
         }
@@ -307,7 +311,8 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
             ui.SetCards(response.CardTypes); // 카드를 세팅
 
 
-        if (response.CardTypes.Count > response.PickIndex.Count) {  // 응답온 카드 카운트가 응답온 선택된 카드 수 보다 작으면 if문 들어옴
+        if (response.CardTypes.Count > response.PickIndex.Count)
+        {  // 응답온 카드 카운트가 응답온 선택된 카드 수 보다 작으면 if문 들어옴
 
             ui.OnSelectedCard(response.PickIndex); // 선택된 카드 제거 화면에서 제거
         }
@@ -325,7 +330,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public void ReactionResponse(GamePacket gamePacket)
     {
         var response = gamePacket.ReactionResponse;
-        if(response.Success)
+        if (response.Success)
         {
             if (UIManager.IsOpened<PopupBattle>())
                 UIManager.Hide<PopupBattle>();
@@ -532,7 +537,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                     case eCharacterState.CONTAINED:
                         {
                             Debug.Log(user.id + " is prison");
-                            GameManager.instance.characters[users[i].id].SetPosition(new Vector3(22.0f,-4.0f,0));
+                            GameManager.instance.characters[users[i].id].SetPosition(new Vector3(22.0f, -4.0f, 0));
                             GameManager.instance.userCharacter.OnChangeState<CharacterPrisonState>();
                         }
                         break;
@@ -579,7 +584,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         var response = gamePacket.PhaseUpdateNotification;
         if (UIGame.instance != null)
             GameManager.instance.SetGameState(response.PhaseType, response.NextPhaseAt);
-        for(int i = 0; i < response.CharacterPositions.Count; i++)
+        for (int i = 0; i < response.CharacterPositions.Count; i++)
         {
             if ((eCharacterState)GameManager.instance.characters[DataManager.instance.users[i].id].userInfo.characterData.StateInfo.State == eCharacterState.CONTAINED)
             {
@@ -595,14 +600,14 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     {
         var response = gamePacket.GameEndNotification;
         GameManager.instance.OnGameEnd();
-        
+
         UIManager.Show<PopupResult>(response.Winners, response.WinType);
     }
 
     public void CardSelectResponse(GamePacket gamePacket)
     {
         var response = gamePacket.CardSelectResponse;
-        if(response.Success)
+        if (response.Success)
         {
             UIManager.Hide<PopupCardSelection>();
         }
@@ -662,5 +667,5 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         }
     }
 
-    
+
 }

@@ -76,6 +76,7 @@ public class PopupPleaMarket : UIBase
     public override void HideDirect()
     {
         UIManager.Hide<PopupPleaMarket>();
+        StopAllCoroutines(); // UI 닫을 때 코루틴 중단
     }
 
     public async void SetCards(RepeatedField<CardType> cards)
@@ -97,16 +98,21 @@ public class PopupPleaMarket : UIBase
         }
     }
 
-    public void SetUserSelectTurn(int time)
+    public void SetUserSelectTurn(long nextTimeAt)
     {
         isMyTurn = true;
-        if(time == 0)
+
+        long clientNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        long offset = clientNow - (nextTimeAt - 10000);
+
+        if (nextTimeAt == 0)
         {
-            time = 5;
+            nextTimeAt = 5;
         }
-        this.time = time;
-        timer.text = time.ToString();
-        //StartCoroutine(SetTimer());
+        //this.time = nextTimeAt;
+        //timer.text = nextTimeAt.ToString();
+        StartCoroutine(SetTimer(nextTimeAt, offset));
     }
 
     public void SetUserSelectNotTurn()
@@ -115,14 +121,28 @@ public class PopupPleaMarket : UIBase
         timer.text = "";
     }
 
-    IEnumerator SetTimer()
+    IEnumerator SetTimer(long nextTimeAt, long offset)
     {
-        while(time > 0)
+        while (true)
         {
-            time -= Time.deltaTime;
-            timer.text = string.Format("{0:0}", time);
-            yield return null;
+            // 클라 현재 시간 (ms)
+            long clientNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long serverNowEstimate = clientNow - offset;
+            long remainMs = nextTimeAt - serverNowEstimate;
+
+            if (remainMs <= 0)
+            {
+                timer.text = "";
+                OnClickItem(cards.FindIndex(obj => obj.gameObject.activeInHierarchy));
+                yield break; // 코루틴 종료
+            }
+
+            int remainSec = Mathf.CeilToInt(remainMs / 1000f);
+            timer.text = remainSec.ToString();
+
+            yield return null; // 다음 프레임까지 대기
+
         }
-        OnClickItem(cards.FindIndex(obj => obj.gameObject.activeInHierarchy));
+      
     }
 }

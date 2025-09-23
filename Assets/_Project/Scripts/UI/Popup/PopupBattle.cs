@@ -23,6 +23,9 @@ public class PopupBattle : UIListBase<Card>
     UserInfo targetUser;
     List<CardDataSO> cards;
     Action<int, long> callback;
+
+    private Coroutine timerCoroutine;
+
     public override void Opened(object[] param)
     {
         targetCard = DataManager.instance.GetData<CardDataSO>(param[0].ToString());
@@ -37,6 +40,14 @@ public class PopupBattle : UIListBase<Card>
         uiPagingViewController.OnMoveEnd += OnMoveEnd;
         title.text = targetCard.displayName;
         AddUseCard(targetCard);
+
+        if(timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+
+        SetUserSelectTurn(targetUser.characterData.StateInfo.NextStateAt);
     }
 
     public void SetActiveControl(bool isActive)
@@ -53,6 +64,7 @@ public class PopupBattle : UIListBase<Card>
     public override void HideDirect()
     {
         UIManager.Hide<PopupBattle>();
+        StopAllCoroutines(); // UI 닫을 때 코루틴 중단
     }
 
     public void AddUseCard(CardDataSO data)
@@ -118,20 +130,39 @@ public class PopupBattle : UIListBase<Card>
         HideDirect();
     }
 
-    public void SetUserSelectTurn(int time)
+    public void SetUserSelectTurn(long nextTimeAt)
     {
-        this.time = time;
-        timer.text = time.ToString();
-        StartCoroutine(SetTimer());
+        long clientNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        long offset = clientNow - (nextTimeAt - 10000);
+
+        //this.time = time;
+        //timer.text = time.ToString();
+        timerCoroutine = StartCoroutine(SetTimer(nextTimeAt, offset));
     }
 
-    IEnumerator SetTimer()
-    {
-        while (time >= 0)
+    IEnumerator SetTimer(long nextTimeAt,long offset)
+    {      
+        while (true)
         {
-            time -= Time.deltaTime;
-            timer.text = string.Format("{0:0}", time);
-            yield return null;
+            // 클라 현재 시간 (ms)
+            long clientNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long serverNowEstimate = clientNow - offset;
+            long remainMs = nextTimeAt - serverNowEstimate;
+
+            if (remainMs <= 0)
+            {
+                timer.text = "0";
+                OnClickDamage();
+                yield break; // 코루틴 종료
+            }
+
+            int remainSec = Mathf.CeilToInt(remainMs / 1000f);
+            timer.text = remainSec.ToString();
+
+            yield return null; // 다음 프레임까지 대기
+
         }
     }
+
 }

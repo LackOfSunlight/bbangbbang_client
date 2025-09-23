@@ -173,7 +173,6 @@ public partial class UserInfo
 
     public CardDataSO OnUseCard(CardDataSO card)
     {
-        Debug.Log("이거 예전거");
         switch(card.type)
         {
             case eCardType.active:
@@ -231,7 +230,6 @@ public partial class UserInfo
 
     public void OnUsedCard(CardDataSO card)
     {
-        Debug.Log("이거 내가 만든거");
         switch (card.type)
         {
             case eCardType.active:

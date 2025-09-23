@@ -202,7 +202,9 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
 
         if (response.Success)
         {
-            if (instance.isConnected) UserInfo.myInfo.OnUsedCard(GameManager.instance.SelectedCard);
+            if (instance.isConnected) {
+                UserInfo.myInfo.OnUsedCard(GameManager.instance.SelectedCard); 
+            }
 
 
             if (UIManager.IsOpened<PopupDeck>())
@@ -440,7 +442,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                             }
                             //var dt = DateTimeOffset.FromUnixTimeMilliseconds(user.characterData.StateInfo.NextStateAt) - DateTime.UtcNow;
                             var dt = user.characterData.StateInfo.NextStateAt;
-                            ui.SetUserSelectTurn((int)dt);
+                            ui.SetUserSelectTurn(dt);
                         }
                         break;
                     case eCharacterState.FLEA_MARKET_WAIT: // 플라마켓 대기
@@ -554,7 +556,10 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                     }
                 }
             }
+            Debug.Log($"타켓 닉넴임 {users[i].nickname}");
+            Debug.Log($"타켓 상태: {(eCharacterState)users[i].characterData.StateInfo.State}");
         }
+
         if (UIGame.instance != null)
             UIGame.instance.UpdateUserSlot(users);
     }

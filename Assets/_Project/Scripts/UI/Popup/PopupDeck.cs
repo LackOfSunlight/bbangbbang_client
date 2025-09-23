@@ -126,11 +126,15 @@ public class PopupDeck : UIListBase<Card>
         {
             UIManager.ShowAlert("누구에게 사용 하시겠습니까?", "119 호출", "나에게", "모두에게", () =>
             {
-                UserInfo.myInfo.OnUseCard(idx);
+                if(!SocketManager.instance.isConnected) 
+                    UserInfo.myInfo.OnUseCard(idx);
+
                 GameManager.instance.SendSocketUseCard(UserInfo.myInfo, UserInfo.myInfo, card.rcode);
             }, () =>
             {
-                UserInfo.myInfo.OnUseCard(idx);
+                if (!SocketManager.instance.isConnected)
+                    UserInfo.myInfo.OnUseCard(idx);
+
                 GameManager.instance.SendSocketUseCard(null, UserInfo.myInfo, card.rcode);
             });
         }

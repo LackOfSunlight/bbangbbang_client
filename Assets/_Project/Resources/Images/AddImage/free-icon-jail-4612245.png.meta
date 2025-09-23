@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      free-icon-jail-4612245_0: -2334737016022144284
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

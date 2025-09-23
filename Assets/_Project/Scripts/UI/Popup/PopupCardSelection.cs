@@ -86,6 +86,7 @@ public class PopupCardSelection : UIListBase<Card>
         ClearEquips();
         ClearWeapon();
         ClearDebuffs();
+        Debug.Log("여기가 까지 들어오나");
         for (int i = 0; i < targetUserInfo.handcardCount; i++)
         {
             var item = AddItem();
@@ -118,7 +119,10 @@ public class PopupCardSelection : UIListBase<Card>
         if (SocketManager.instance.isConnected)
         {
             GamePacket packet = new GamePacket();
-            SelectCardType selectType = selectCard.transform.parent == weaponSlot ? SelectCardType.Weapon : equipSlots.Find(obj => obj == selectCard.transform.parent) != null ? SelectCardType.Equip : debuffSlots.Find(obj => obj == selectCard.transform.parent) != null ? SelectCardType.Debuff : SelectCardType.Hand;
+            SelectCardType selectType = selectCard.transform.parent == weaponSlot ? SelectCardType.Weapon : 
+                equipSlots.Find(obj => obj == selectCard.transform.parent) != null ? SelectCardType.Equip : 
+                debuffSlots.Find(obj => obj == selectCard.transform.parent) != null ? SelectCardType.Debuff : SelectCardType.Hand;
+
             packet.CardSelectRequest = new C2SCardSelectRequest() { SelectType = selectType, SelectCardType = selectType == 0 ? CardType.None : selectCard.cardData.cardType };
             SocketManager.instance.Send(packet);
         }

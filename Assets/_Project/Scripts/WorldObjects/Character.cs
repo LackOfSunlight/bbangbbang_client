@@ -99,7 +99,6 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     {
         if (states.ContainsKey(typeof(T).Name))
         {
-            Debug.Log("111111111111111111111111여기 들어오나");
             ChangeState<T>()?.SetElement(anim, rig, this);
         }
         else

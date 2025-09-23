@@ -60,7 +60,6 @@ public class UIManager : MonoSingleton<UIManager>
             instance.uiList.Add(ui);
         }
 
-        Debug.Log("이까지 들어오나");
         ui.SetActive(ui.uiOptions.isActiveOnLoad);
         ui.opened?.Invoke(param);
         ui.uiOptions.isActiveOnLoad = true;

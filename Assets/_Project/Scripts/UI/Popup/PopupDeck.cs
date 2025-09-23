@@ -129,12 +129,14 @@ public class PopupDeck : UIListBase<Card>
                 if(!SocketManager.instance.isConnected) 
                     UserInfo.myInfo.OnUseCard(idx);
 
+                GameManager.instance.SelectedCard = card;
                 GameManager.instance.SendSocketUseCard(UserInfo.myInfo, UserInfo.myInfo, card.rcode);
             }, () =>
             {
                 if (!SocketManager.instance.isConnected)
                     UserInfo.myInfo.OnUseCard(idx);
 
+                GameManager.instance.SelectedCard = card;
                 GameManager.instance.SendSocketUseCard(null, UserInfo.myInfo, card.rcode);
             });
         }

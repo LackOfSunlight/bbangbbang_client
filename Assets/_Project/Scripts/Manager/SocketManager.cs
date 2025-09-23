@@ -206,7 +206,6 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                 UserInfo.myInfo.OnUsedCard(GameManager.instance.SelectedCard); 
             }
 
-
             if (UIManager.IsOpened<PopupDeck>())
                 UIManager.Hide<PopupDeck>();
             if (UIManager.IsOpened<PopupBattle>())

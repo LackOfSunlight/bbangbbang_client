@@ -95,6 +95,8 @@ public class PopupRoleInfo : UIBase
         // 0 → 1로 커지면서 "튀어나오는" 느낌 (OutBack으로 튕기는 효과)
         transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
+        AudioManager.instance.PlayOneShot("GameIntro");
+
     }
 
     public override void HideDirect()

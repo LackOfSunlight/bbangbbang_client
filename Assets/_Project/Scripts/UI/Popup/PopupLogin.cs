@@ -56,6 +56,7 @@ public class PopupLogin : UIBase
             buttonSet.SetActive(false);
             login.SetActive(true);
         }
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickRegister()
@@ -76,6 +77,7 @@ public class PopupLogin : UIBase
             buttonSet.SetActive(false);
             register.SetActive(true);
         }
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickSendLogin()
@@ -91,6 +93,7 @@ public class PopupLogin : UIBase
         PlayerPrefs.SetString("password" + tags[0], loginPassword.text);
         SocketManager.instance.Send(packet);
         //OnLoginEnd(true);
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickSendRegister()
@@ -110,18 +113,21 @@ public class PopupLogin : UIBase
         PlayerPrefs.SetString("id" + tags[0], regId.text);
         PlayerPrefs.SetString("password" + tags[0], regPassword.text);
         SocketManager.instance.Send(packet);
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickCancelRegister()
     {
         buttonSet.SetActive(true);
         register.SetActive(false);
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickCancelLogin()
     {
         buttonSet.SetActive(true);
         login.SetActive(false);
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnTouchScreen()
@@ -139,6 +145,7 @@ public class PopupLogin : UIBase
             HideDirect();
             await UIManager.Show<UITopBar>();
             await UIManager.Show<UIGnb>();
+            AudioManager.instance.PlayBgm("LobbyBGM");
         }
         else
         {
@@ -170,5 +177,6 @@ public class PopupLogin : UIBase
     public void OnClickChangeServer()
     {
         UIManager.Show<PopupConnection>();
+        AudioManager.instance.PlayOneShot("Button");
     }
 }

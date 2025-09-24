@@ -64,11 +64,13 @@ public class UIMain : UIListBase<ItemRoom>
             packet.JoinRandomRoomRequest = new C2SJoinRandomRoomRequest();
             SocketManager.instance.Send(packet);
         }
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickCreateRoom()
     {
         UIManager.Show<PopupRoomCreate>();
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnJoinRoom(int idx)

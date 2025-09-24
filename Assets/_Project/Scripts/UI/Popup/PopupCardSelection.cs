@@ -130,5 +130,7 @@ public class PopupCardSelection : UIListBase<Card>
         {
             GameManager.instance.OnSelectCard(targetUserInfo, selectCard.cardData.rcode, UserInfo.myInfo, targetRcode);
         }
+
+        AudioManager.instance.PlayOneShot("Button");
     }
 }

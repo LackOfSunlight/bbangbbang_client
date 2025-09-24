@@ -143,16 +143,32 @@ public class UIGame : UIBase
     public void OnClickDeck()
     {
         if (!GameManager.instance.userCharacter.IsState<CharacterStopState>() &&
-            !GameManager.instance.userCharacter.IsState<CharacterDeathState>())
+            !GameManager.instance.userCharacter.IsState<CharacterDeathState>() &&
+            !GameManager.instance.userCharacter.IsState<CharacterPrisonState>())
         {
             UIManager.Show<PopupDeck>();
+            AudioManager.instance.PlayOneShot("Button");
+            return;
         }
+
+        AudioManager.instance.PlayOneShot("Block");
+        
     }
 
     public void OnClickBang()
     {
         if (UserInfo.myInfo.isShotPossible || GameManager.instance.SelectedCard.cardType != CardType.Bbang)
             GameManager.instance.OnUseCard();
+
+        if(GameManager.instance.targetCharacter != null)
+        {
+            AudioManager.instance.SelectedCardSound(GameManager.instance.SelectedCard.cardType);
+        }
+        else
+        {
+            AudioManager.instance.PlayOneShot("Block");
+        }
+
     }
 
     public void SetSelectCard(CardDataSO card = null)
@@ -162,7 +178,9 @@ public class UIGame : UIBase
             if (GameManager.instance.SelectedCard != null)
             {
                 //UserInfo.myInfo.handCards.Find(obj => obj.rcode == GameManager.instance.SelectedCard.rcode) == null ||
-                if ((GameManager.instance.SelectedCard.cardType == CardType.Bbang && !UserInfo.myInfo.isShotPossible) || GameManager.instance.SelectedCard.isDirectUse)
+                if (UserInfo.myInfo.handCards.Find(obj => obj.rcode == GameManager.instance.SelectedCard.rcode) == null || 
+                    (GameManager.instance.SelectedCard.cardType == CardType.Bbang && !UserInfo.myInfo.isShotPossible) ||
+                    GameManager.instance.SelectedCard.isDirectUse)
                 {
                     GameManager.instance.UnselectCard();
                     SetShotButton(false);
@@ -292,11 +310,19 @@ public class UIGame : UIBase
     public void OnClickJobDescriptionBtn()
     {
        UIManager.Show<PopupJobInfo>();
+       AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickCharacteristicBtn()
     {
         UIManager.Show<PopupCharacteristic>();
+        AudioManager.instance.PlayOneShot("Button");
+    }
+
+    public void OnClickSettingBtn()
+    {
+        UIManager.Show<PopupSetting>();
+        AudioManager.instance.PlayOneShot("Button");
     }
 
 }

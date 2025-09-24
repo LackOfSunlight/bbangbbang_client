@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Google.Protobuf.Collections;
 using Ironcow;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
-using Google.Protobuf.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIRoom : UIBase
 {
@@ -36,7 +35,7 @@ public class UIRoom : UIBase
         roomCount.text = string.Format("{0}/{1}", roomData.Users.Count, roomData.MaxUserNum);
         for (int i = 0; i < roomData.Users.Count; i++)
         {
-            if(users.Find(obj => obj.id == roomData.Users[i].Id) != null)
+            if (users.Find(obj => obj.id == roomData.Users[i].Id) != null)
             {
                 continue;
             }
@@ -50,7 +49,7 @@ public class UIRoom : UIBase
                 AddUserInfo(userinfo);
             }
         }
-        if(roomData.Users.Count == 0)
+        if (roomData.Users.Count == 0)
         {
             AddUserInfo(UserInfo.myInfo);
         }
@@ -100,6 +99,7 @@ public class UIRoom : UIBase
 
     public void OnClickGameStart()
     {
+        AudioManager.instance.PlayOneShot("Button");
         //if (users.Count < 4) return;
         if (SocketManager.instance.isConnected)
         {
@@ -134,7 +134,7 @@ public class UIRoom : UIBase
             });
 
             OnPrepare(users);
-        }
+        } 
     }
 
     public void OnPrepare(RepeatedField<UserData> users)
@@ -148,14 +148,14 @@ public class UIRoom : UIBase
         users = userDatas;
         //타겟 표시
         var idx = users.FindIndex(obj => obj.roleType == eRoleType.target);
-        if(idx >= 0)
+        if (idx >= 0)
             slots[idx].OnTargetMark();
         //내 역할 표시
         var myIdx = users.FindIndex(obj => obj.id == UserInfo.myInfo.id);
         slots[myIdx].SetRoleIcon(users[myIdx].roleType);
 
         await Task.Delay(1000);
-        
+
         for (int i = 0; i < users.Count; i++)
         {
             slots[i].OnChangeCharacter(users[i].selectedCharacterRcode);
@@ -197,5 +197,6 @@ public class UIRoom : UIBase
         {
             HideDirect();
         }
+        AudioManager.instance.PlayOneShot("Button");
     }
 }

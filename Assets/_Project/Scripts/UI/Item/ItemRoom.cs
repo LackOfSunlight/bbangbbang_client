@@ -28,5 +28,6 @@ public class ItemRoom : UIListItem
     public void OnClickItem()
     {
         callback?.Invoke(roomData.Id);
+        AudioManager.instance.PlayOneShot("Button");
     }
 }

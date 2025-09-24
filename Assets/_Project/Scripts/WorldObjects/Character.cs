@@ -221,6 +221,7 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     {
         anim.ChangeSpriteColor(Color.red);
         DOTween.To(() => Color.red, c => anim.ChangeSpriteColor(c), Color.white, 0.2f);
+        AudioManager.instance.PlayOneShot("Damage");
 
         ShowDamageText(damage);
     }
@@ -240,7 +241,7 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
 
         // DOTween으로 애니메이션
         Sequence seq = DOTween.Sequence();
-        seq.Append(damageText.transform.DOMoveY(startPos.y + 1.0f, 0.5f)); // 위로 이동
+        seq.Append(damageText.transform.DOMoveY(startPos.y + 0.5f, 1.0f)); // 위로 이동
         seq.Join(damageText.DOFade(0f, 0.5f)); // 동시에 페이드아웃
         seq.OnComplete(() => damageText.gameObject.SetActive(false)); // 끝나면 텍스트 비우기
     }

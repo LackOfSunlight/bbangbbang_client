@@ -34,6 +34,7 @@ public class PopupConnection : UIBase
         SocketManager.instance.Init(ip.text, int.Parse(port.text));
         SocketManager.instance.Connect();
         HideDirect();
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickClose()
@@ -47,5 +48,6 @@ public class PopupConnection : UIBase
         SocketManager.instance.Init(ip, int.Parse(port));
         SocketManager.instance.Connect();
         HideDirect();
+        AudioManager.instance.PlayOneShot("Button");
     }
 }

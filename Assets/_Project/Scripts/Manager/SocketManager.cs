@@ -144,7 +144,8 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public async void GameStartNotification(GamePacket gamePacket)
     {
         var response = gamePacket.GameStartNotification;
-      
+
+        AudioManager.instance.StopBgm();
 
         await SceneManager.LoadSceneAsync("Game");
         while (!UIManager.IsOpened<UIGame>())
@@ -274,6 +275,8 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
             //UserInfo.myInfo.shotCount++;
             UIGame.instance.SetSelectCard(null);
         }
+
+        AudioManager.instance.SelectedCardSound(card.cardType);
 
     }
 

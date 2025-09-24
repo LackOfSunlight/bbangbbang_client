@@ -4,6 +4,7 @@ using UnityEngine;
 using Ironcow;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class CanvasIntro : CanvasBase<CanvasIntro>
 {

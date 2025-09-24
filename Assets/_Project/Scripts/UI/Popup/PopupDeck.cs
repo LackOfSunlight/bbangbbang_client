@@ -89,7 +89,6 @@ public class PopupDeck : UIListBase<Card>
         var datas = UserInfo.myInfo.handCards;
         foreach (var data in datas)
         {
-            Debug.Log($"카드이름: {data.cardType}");
             var item = AddItem();
             item.Init(data, OnClickItem);
         }
@@ -144,6 +143,8 @@ public class PopupDeck : UIListBase<Card>
         {
             OnUseCard();
         }
+
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnUseCard()
@@ -169,12 +170,14 @@ public class PopupDeck : UIListBase<Card>
 
         if (!card.isDirectUse)
         {
-            HideDirect();       
+            HideDirect();
+            AudioManager.instance.PlayOneShot("HandlingIn");
         }
         else
         {
             GameManager.instance.OnUseCard(card.rcode);
             SetList();
+            AudioManager.instance.SelectedCardSound(card.cardType);
         }
     }
 

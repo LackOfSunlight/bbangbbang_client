@@ -119,6 +119,8 @@ public class PopupBattle : UIListBase<Card>
             SetList();
         }
 
+        AudioManager.instance.PlayOneShot("Button");
+
     }
 
     public void OnClickDamage()
@@ -128,6 +130,7 @@ public class PopupBattle : UIListBase<Card>
             callback.Invoke(0, 0);
         }
         HideDirect();
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void SetUserSelectTurn(long nextTimeAt)

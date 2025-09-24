@@ -23,11 +23,13 @@ public class UITopBar : UIBase
     public void OnClickSetting()
     {
         UIManager.Show<PopupSetting>();
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void OnClickNickname()
     {
         UIManager.Show<PopupNickname>();
+        AudioManager.instance.PlayOneShot("Button");
     }
 
     public void SetUserInfo(UserInfo userInfo)

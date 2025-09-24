@@ -497,5 +497,19 @@ namespace Ironcow
             user.UpdateUserInfo(userdata);
             return user;
         }
+
+        public static void DamageIndicate(this List<UserInfo> users, RepeatedField<UserData> userdatas)
+        {
+            for (int i = 0; i < userdatas.Count; i++)
+            {
+                var user = users.Find(obj => obj.id == userdatas[i].Id);
+
+                if(user.hp > userdatas[i].Character.Hp)
+                {
+                    GameManager.instance.characters[user.id].Damage(user.hp - userdatas[i].Character.Hp);
+                }
+            }
+        }
+
     }
 }

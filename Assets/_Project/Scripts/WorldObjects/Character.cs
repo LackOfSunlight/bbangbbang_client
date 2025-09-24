@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using DG.Tweening;
 using Ironcow;
-using UnityEngine.UI;
-using Unity.VisualScripting;
-using UnityEngine.AI;
-using System;
+using TMPro;
 using Unity.Multiplayer.Playmode;
+using UnityEngine;
+using UnityEngine.AI;
 
 
 public class Character : FSMController<CharacterState, CharacterFSM, CharacterDataSO>
@@ -23,6 +20,7 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     [SerializeField] private CircleCollider2D collider;
     [SerializeField] public GameObject stop;
     [SerializeField] public GameObject prizon;
+    [SerializeField] private TMP_Text damageText;
 
     [SerializeField] private float speed = 3;
 
@@ -38,6 +36,10 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         if (characterType == eCharacterType.npc) minimapIcon.gameObject.SetActive(false);
+
+        var renderer = damageText.GetComponent<MeshRenderer>();
+        renderer.sortingLayerName = "UI"; // 원하는 Sorting Layer 이름
+        renderer.sortingOrder = 10;       // 숫자가 클수록 위
     }
 
     public override async void Init(BaseDataSO data)
@@ -119,7 +121,7 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
 
     public void OnVisibleMinimapIcon(bool visible)
     {
-        if(characterType == eCharacterType.non_playable)
+        if (characterType == eCharacterType.non_playable)
             minimapIcon.gameObject.SetActive(visible && !isInside);
         else
             minimapIcon.gameObject.SetActive(false);
@@ -193,7 +195,7 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
 
     private void Update()
     {
-        if(fsm != null)
+        if (fsm != null)
             fsm.UpdateState();
     }
 
@@ -213,5 +215,33 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
             return base.ChangeState<T>();
         else
             return null;
+    }
+
+    public void Damage(int damage)
+    {
+        anim.ChangeSpriteColor(Color.red);
+        DOTween.To(() => Color.red, c => anim.ChangeSpriteColor(c), Color.white, 0.2f);
+
+        ShowDamageText(damage);
+    }
+
+    private void ShowDamageText(int damage)
+    {
+        // 텍스트 설정
+        damageText.gameObject.SetActive(true);
+        damageText.text = damage.ToString();
+
+        // 시작 위치 (캐릭터 머리 위)
+        Vector3 startPos = transform.position + new Vector3(0, 0.8f, 0);
+        damageText.transform.position = startPos;
+
+        // 초기 투명도
+        damageText.alpha = 1f;
+
+        // DOTween으로 애니메이션
+        Sequence seq = DOTween.Sequence();
+        seq.Append(damageText.transform.DOMoveY(startPos.y + 1.0f, 0.5f)); // 위로 이동
+        seq.Join(damageText.DOFade(0f, 0.5f)); // 동시에 페이드아웃
+        seq.OnComplete(() => damageText.gameObject.SetActive(false)); // 끝나면 텍스트 비우기
     }
 }

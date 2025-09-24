@@ -91,4 +91,9 @@ public class SpriteAnimation :
     {
         spriteRenderer.flipX = isFlip;
     }
+
+    public void ChangeSpriteColor(Color color)
+    {
+        spriteRenderer.color = color;
+    }
 }

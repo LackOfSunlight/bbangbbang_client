@@ -348,6 +348,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
             await Task.Delay(100);
         }
         var response = gamePacket.UserUpdateNotification;
+        DataManager.instance.users.DamageIndicate(response.User);
         var users = DataManager.instance.users.UpdateUserData(response.User);
         if (!GameManager.isInstance || GameManager.instance.characters == null || GameManager.instance.characters.Count == 0) return;
         var myIndex = users.FindIndex(obj => obj.id == UserInfo.myInfo.id);

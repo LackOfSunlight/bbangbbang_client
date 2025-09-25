@@ -145,13 +145,12 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     {
         var response = gamePacket.GameStartNotification;
 
-        AudioManager.instance.StopBgm();
 
         await SceneManager.LoadSceneAsync("Game");
         while (!UIManager.IsOpened<UIGame>())
         {
             await Task.Yield();
-        }     
+        }
 
         DataManager.instance.users.Clear();
         for (int i = 0; i < response.Users.Count; i++)
@@ -276,8 +275,6 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
             UIGame.instance.SetSelectCard(null);
         }
 
-        AudioManager.instance.SelectedCardSound(card.cardType);
-
     }
 
     public void EquipCardNotification(GamePacket gamePacket)
@@ -351,7 +348,6 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
             await Task.Delay(100);
         }
         var response = gamePacket.UserUpdateNotification;
-        DataManager.instance.users.DamageIndicate(response.User);
         var users = DataManager.instance.users.UpdateUserData(response.User);
         if (!GameManager.isInstance || GameManager.instance.characters == null || GameManager.instance.characters.Count == 0) return;
         var myIndex = users.FindIndex(obj => obj.id == UserInfo.myInfo.id);
@@ -640,6 +636,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
     public void WarningNotification(GamePacket gamePacket)
     {
         var response = gamePacket.WarningNotification;
+        UIGame.instance.OnWarningNotification(response.ExpectedAt);
         UIGame.instance.SetBombAlert(response.WarningType == WarningType.BombWaning);
     }
 
@@ -671,6 +668,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                     shield.transform.position = target.position;
                 }
                 break;
+
         }
     }
 

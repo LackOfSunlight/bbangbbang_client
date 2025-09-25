@@ -28,6 +28,10 @@ public class UIGame : UIBase
     [SerializeField] public VirtualStick stick;
     [SerializeField] private Image bombButton;
 
+    [SerializeField] private TMP_Text bombTimerText; // 폭탄 타이머 텍스트
+
+    private float bombRemainTime = -1; // 폭탄 타이머 (초 단위), -1은 비활성 상태
+
     private float timer = 180;
     Dictionary<long, UserInfoSlot> userslots = new Dictionary<long, UserInfoSlot>();
     private bool isBombTargetSelect = false;
@@ -124,6 +128,21 @@ public class UIGame : UIBase
         timer -= Time.deltaTime;
         time.text = string.Format("{0:00}:{1:00}", Mathf.Floor(timer / 60), timer % 60);
         if (timer <= 0 && !SocketManager.instance.isConnected) GameManager.instance.OnTimeEnd();
+
+        // 폭탄 타이머
+        if (bombRemainTime > 0)
+        {
+            bombRemainTime -= Time.deltaTime;
+            int remainInt = Mathf.CeilToInt(bombRemainTime); // 정수 초 단위
+                                                             // TODO: UI 반영 → 예: 폭탄 버튼 옆에 텍스트 표시
+            bombTimerText.text = remainInt.ToString();
+        }
+        else if (bombRemainTime != -1)
+        {   // 종료 처리
+            bombRemainTime = -1;
+            bombTimerText.text = "";
+            bombTimerText.gameObject.SetActive(false);
+        }
     }
 
     public override void HideDirect()
@@ -243,7 +262,12 @@ public class UIGame : UIBase
         item.text = notice;
         noticeLogItem.rectTransform.sizeDelta = new Vector2(item.preferredWidth, item.preferredHeight);
     }
-
+    public void OnWarningNotification(long expectedAt)
+    {
+        var remain = (expectedAt - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / 1000.0f;
+        bombRemainTime = Mathf.Max(0, (float)remain);
+        bombTimerText.gameObject.SetActive(true); // 표시 활성화
+    }
     public void SetBombButton(bool isActive)
     {
         bombButton.gameObject.SetActive(isActive);

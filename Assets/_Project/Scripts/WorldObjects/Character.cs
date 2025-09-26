@@ -22,6 +22,8 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     [SerializeField] public GameObject prizon;
     [SerializeField] private TMP_Text damageText;
 
+    [SerializeField] private GameObject bombIcon;
+
     [SerializeField] private float speed = 3;
 
     [HideInInspector] public UserInfo userInfo;
@@ -244,5 +246,10 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
         seq.Append(damageText.transform.DOMoveY(startPos.y + 0.5f, 1.0f)); // 위로 이동
         seq.Join(damageText.DOFade(0f, 0.5f)); // 동시에 페이드아웃
         seq.OnComplete(() => damageText.gameObject.SetActive(false)); // 끝나면 텍스트 비우기
+    }
+    public void SetBombIcon(bool isActive)
+    {
+        if (bombIcon != null)
+            bombIcon.SetActive(isActive);
     }
 }

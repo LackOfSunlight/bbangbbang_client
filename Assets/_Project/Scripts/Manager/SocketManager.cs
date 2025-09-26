@@ -358,6 +358,11 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         for (int i = 0; i < users.Count; i++)
         {
             var targetCharacter = GameManager.instance.characters[users[i].id];
+
+            bool hasBomb = users[i].debuffs.Exists(obj => obj.rcode == "CAD00023");
+            targetCharacter.SetBombIcon(hasBomb);
+            
+
             if (users[i].hp == 0)
             {
                 targetCharacter.SetDeath();

@@ -135,9 +135,10 @@ public class PopupBattle : UIListBase<Card>
 
     public void SetUserSelectTurn(long nextTimeAt)
     {
+        Debug.Log($"서버에서 받은 시간: {targetUser.characterData.StateInfo.NextStateAt}");
         long clientNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-        long offset = clientNow - (nextTimeAt - 10000);
+        long offset = clientNow - (nextTimeAt - 5000);
 
         //this.time = time;
         //timer.text = time.ToString();

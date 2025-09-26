@@ -144,7 +144,7 @@ public class PopupLogin : UIBase
             UIManager.Get<UIMain>().OnRefreshRoomList();
             HideDirect();
             await UIManager.Show<UITopBar>();
-            await UIManager.Show<UIGnb>();
+            //await UIManager.Show<UIGnb>();
             AudioManager.instance.PlayBgm("LobbyBGM");
         }
         else

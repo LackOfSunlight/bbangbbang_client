@@ -112,6 +112,7 @@ public class PopupPleaMarket : UIBase
         }
         //this.time = nextTimeAt;
         //timer.text = nextTimeAt.ToString();
+        Debug.Log($"{nextTimeAt}");
         StartCoroutine(SetTimer(nextTimeAt, offset));
     }
 

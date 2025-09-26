@@ -83,4 +83,20 @@ public class UIMain : UIListBase<ItemRoom>
         }
     }
 
+
+    public void OnClickJobDescriptionBtn()
+    {
+        UIManager.Show<PopupJobInfo>();
+        AudioManager.instance.PlayOneShot("Button");
+    }
+
+    public void OnClickCharacteristicBtn()
+    {
+        UIManager.Show<PopupCharacteristic>();
+        AudioManager.instance.PlayOneShot("Button");
+    }
+
+
+
+
 }

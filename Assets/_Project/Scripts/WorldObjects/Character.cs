@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Ironcow;
 using TMPro;
@@ -8,6 +10,9 @@ using UnityEngine.AI;
 
 public class Character : FSMController<CharacterState, CharacterFSM, CharacterDataSO>
 {
+    // 모든 캐릭터를 관리하는  리스트
+    public static List<Character> allCharacters = new List<Character>();
+
     [SerializeField] public eCharacterType characterType;
     [SerializeField] private SpriteAnimation anim;
     [SerializeField] private Rigidbody2D rig;
@@ -23,6 +28,7 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     [SerializeField] private TMP_Text damageText;
 
     [SerializeField] private GameObject bombIcon;
+    [SerializeField] private TMP_Text bombTimerText; // 폭탄 타이머 텍스트
 
     [SerializeField] private float speed = 3;
 
@@ -33,8 +39,12 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     public float Speed { get => speed; }
     public bool isInside;
 
+    private float bombRemainTime = -1; // 폭탄 타이머 (초 단위), -1은 비활성 상태
+
     private void Awake()
     {
+        allCharacters.Add(this); // 캐릭터 등록
+
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         if (characterType == eCharacterType.npc) minimapIcon.gameObject.SetActive(false);
@@ -42,6 +52,12 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
         var renderer = damageText.GetComponent<MeshRenderer>();
         renderer.sortingLayerName = "UI"; // 원하는 Sorting Layer 이름
         renderer.sortingOrder = 10;       // 숫자가 클수록 위
+    }
+
+    // Destroy 시 리스트에서 제거
+    private void OnDestroy()
+    {
+        allCharacters.Remove(this);
     }
 
     public override async void Init(BaseDataSO data)
@@ -199,6 +215,20 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
     {
         if (fsm != null)
             fsm.UpdateState();
+
+        // 폭탄 타이머
+        if (bombRemainTime > 0)
+        {
+            bombRemainTime -= Time.deltaTime;
+            int remainInt = Mathf.CeilToInt(bombRemainTime); 
+            bombTimerText.text = remainInt.ToString();
+        }
+        else if (bombRemainTime != -1)
+        {   // 종료 처리
+            bombRemainTime = -1;
+            bombTimerText.text = "00";
+            bombTimerText.gameObject.SetActive(false);
+        }
     }
 
     public async void SetDeath()
@@ -247,9 +277,15 @@ public class Character : FSMController<CharacterState, CharacterFSM, CharacterDa
         seq.Join(damageText.DOFade(0f, 0.5f)); // 동시에 페이드아웃
         seq.OnComplete(() => damageText.gameObject.SetActive(false)); // 끝나면 텍스트 비우기
     }
-    public void SetBombIcon(bool isActive)
+
+    public void OnWarningNotification(long expectedAt)
     {
-        if (bombIcon != null)
-            bombIcon.SetActive(isActive);
+        var remain = (expectedAt - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / 1000.0f;
+        bombRemainTime = Mathf.Max(0, (float)remain);
+        bombTimerText.gameObject.SetActive(true); // 표시 활성화
+    }
+    public void SetBombIcon(bool hasBomb)
+    {
+            bombIcon.SetActive(hasBomb);
     }
 }

@@ -647,6 +647,11 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         var response = gamePacket.WarningNotification;
         UIGame.instance.OnWarningNotification(response.ExpectedAt);
         UIGame.instance.SetBombAlert(response.WarningType == WarningType.BombWaning);
+
+        foreach (var character in Character.allCharacters)
+        {
+            character.OnWarningNotification(response.ExpectedAt);
+        }
     }
 
     // 애니메이션 요청

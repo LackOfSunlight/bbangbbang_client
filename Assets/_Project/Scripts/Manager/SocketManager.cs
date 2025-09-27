@@ -358,6 +358,11 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         for (int i = 0; i < users.Count; i++)
         {
             var targetCharacter = GameManager.instance.characters[users[i].id];
+
+            bool hasBomb = users[i].debuffs.Exists(obj => obj.rcode == "CAD00023");
+            targetCharacter.SetBombIcon(hasBomb);
+            
+
             if (users[i].hp == 0)
             {
                 targetCharacter.SetDeath();
@@ -642,6 +647,11 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
         var response = gamePacket.WarningNotification;
         UIGame.instance.OnWarningNotification(response.ExpectedAt);
         UIGame.instance.SetBombAlert(response.WarningType == WarningType.BombWaning);
+
+        foreach (var character in Character.allCharacters)
+        {
+            character.OnWarningNotification(response.ExpectedAt);
+        }
     }
 
     // 애니메이션 요청

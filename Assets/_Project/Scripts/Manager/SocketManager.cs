@@ -395,10 +395,13 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                 if (user.debuffs.Find(obj => obj.rcode == "CAD00023"))
                 {
                     UIGame.instance.SetBombButton(true);
+                    AudioManager.instance.PlayBgm("Timer");
                 }
                 else
                 {
                     UIGame.instance.SetBombButton(false);
+                    AudioManager.instance.StopBgm();
+
                 }
                 switch ((eCharacterState)users[i].characterData.StateInfo.State)
                 {
@@ -667,6 +670,7 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                     GameManager.instance.virtualCamera.Target.TrackingTarget = target;
                     var bomb = Instantiate(await ResourceManager.instance.LoadAsset<Transform>("Explosion", eAddressableType.Prefabs));
                     bomb.transform.position = target.position;
+                    AudioManager.instance.PlayOneShot("BombTarget");
                 }
                 break;
             case AnimationType.SatelliteTargetAnimation:
@@ -674,12 +678,14 @@ public class SocketManager : TCPSocketManagerBase<SocketManager>
                     GameManager.instance.virtualCamera.Target.TrackingTarget = target;
                     var beam = Instantiate(await ResourceManager.instance.LoadAsset<Transform>("Beam", eAddressableType.Prefabs));
                     beam.transform.position = target.position;
+                    AudioManager.instance.PlayOneShot("SatelliteTarget");
                 }
                 break;
             case AnimationType.ShieldAnimation:
                 {
                     var shield = Instantiate(await ResourceManager.instance.LoadAsset<Transform>("Shield", eAddressableType.Prefabs));
                     shield.transform.position = target.position;
+                    AudioManager.instance.PlayOneShot("Shield");
                 }
                 break;
 
